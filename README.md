@@ -1,69 +1,141 @@
-# React + TypeScript + Vite
+# 모임 일정 조율 웹앱
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+모임 일정 조율을 쉽고 빠르게!  
+회원/비회원 누구나 사용할 수 있는 직관적인 모임 일정 조율 도구입니다.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🔗 배포 URL
 
-## Expanding the ESLint configuration
+[https://video-spoon-79233285.figma.site](https://video-spoon-79233285.figma.site)  
+(※ 실제 도메인 확정 전, 임시 URL 사용 가능)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 👤 페르소나
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### 1. 대학생 정민 (22세)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- 에브리타임을 적극적으로 사용하고 있음
+- 스터디 모임을 자주 만들고 참여함
+- 매번 단톡방에서 "다음 주 언제 돼?" 질문이 반복되는 것이 비효율적이라 느낌
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. 직장인 수연 (30세)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- 부서 회의나 외부 미팅 일정을 조율해야 하는 경우가 많음
+- 주로 평일 9~6 근무
+- 카카오톡을 자주 사용하며 빠른 피드백을 선호
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 3. 고등학생 유진 (17세)
+
+- 반 친구들과 조별과제 모임을 자주 구성함
+- 정해진 시간표 외에 학원, 야자 등 다양한 고정 일정이 있음
+- 모바일로 간편하게 참여 가능한 도구를 원함
+
+### 4. 비회원 사용자 (누구나)
+
+- 계정 없이도 링크만으로 일정 조율에 참여 가능
+- 간단한 회식, 약속 등 빠르게 일정을 정하고 싶은 일반 사용자
+
+---
+
+## 🧩 사용자 시나리오 및 요구사항
+
+### 👩‍🎓 대학생 사용자 시나리오
+
+**목표**: 스터디원들과 빠르게 가능한 시간대를 찾아 모임 일정 확정하기
+
+**시나리오**:
+정민은 스터디 그룹과의 다음 모임 일정을 조율하기 위해 웹앱에 로그인합니다.  
+자신의 개인 시간표가 자동으로 반영되어 일정 생성 시 불가능한 시간이 제외됩니다.  
+정민은 모임 이름과 기간을 설정한 뒤 "날짜 찾아주기 요청" 버튼을 눌러 링크를 스터디 단톡방에 공유합니다.  
+참여자들이 각각 가능한 시간을 입력하고, 앱은 모든 인원이 가능한 최적의 시간을 추천합니다.  
+정민은 추천된 시간 중 하나를 선택해 모임을 확정하고, 카카오톡으로 일정과 장소를 함께 공유합니다.
+
+**요구사항**
+
+1. 회원 로그인 기능
+2. 개인 시간표 저장 및 자동 반영 기능
+3. 일정 기간 설정 및 링크 공유 기능
+4. 참여자 시간 수집 및 가능한 시간 추천 기능
+5. 추천 일정 카카오톡 공유 기능
+
+---
+
+### 👨‍💼 직장인 사용자 시나리오
+
+**목표**: 외부 협력사와의 회의 일정을 쉽고 정확하게 조율하기
+
+**시나리오**:
+수연은 비회원으로 웹앱에 접속하여 회의 일정 조율을 위한 모임을 생성합니다.  
+직장인 옵션을 선택하자, 기본적으로 평일 9시~18시가 자동 제외됩니다.  
+모임 기간을 설정하고, 참여자들에게 링크를 문자로 전송합니다.  
+참여자들이 각자의 불가능한 시간을 선택하고 제출하자, 웹앱이 가능한 회의 시간대를 분석하여 추천합니다.  
+수연은 90% 인원이 가능한 시간대를 선택하여 회의를 확정합니다.
+
+**요구사항**
+
+1. 비회원 모드 지원
+2. 신분 선택 및 자동 시간 제외 기능
+3. 링크 문자 공유 기능
+4. 참여자 불가능 시간 입력 기능
+5. 모든/90% 가능한 시간 추천 옵션
+
+---
+
+### 🧑‍🏫 고등학생 사용자 시나리오
+
+**목표**: 조별 과제 모임 시간을 간편하게 조율하고 공유하기
+
+**시나리오**:
+유진은 친구들과 조별 과제 일정을 맞추기 위해 웹앱 링크를 공유받고 접속합니다.  
+신분에서 ‘고등학생’을 선택하자 오전 8시~오후 5시가 자동 제외됩니다.  
+유진은 방과 후 학원 시간을 추가로 제외 시간으로 설정합니다.  
+드래그 앤 드롭 UI로 불가능한 시간대를 선택한 후 제출합니다.  
+모임 생성자는 모든 친구들의 입력이 끝난 후 추천 시간대를 확인하고, 모임 일정을 단체 카톡방에 공유합니다.
+
+**요구사항**
+
+1. 신분별 자동 시간 제외 기능
+2. 사용자 지정 제외 시간 설정 기능
+3. 드래그 앤 드롭 시간 선택 UI
+4. 추천 시간 확인 기능
+5. 카카오톡 공유 기능
+
+---
+
+## 🧠 주요 기능 요약
+
+- ✅ **회원/비회원 모드 지원**
+- 📅 **개인 시간표 저장 및 자동 반영 (회원 전용)**
+- 🕒 **신분별 자동 시간 제외 설정**
+- 📆 **모임 기간 설정 및 일정 조율 인터페이스**
+- 💡 **최적 일정 추천 (모두 가능 / 대부분 가능 / 선호 반영 등)**
+- 📤 **카카오톡/문자 링크 공유 및 일정 전달**
+- 🗳️ **투표, 댓글, 템플릿 제공 (선택 기능)**
+- 🔔 **알림 및 캘린더 연동 기능 제공 (예정)**
+
+---
+
+## 📱 기술 고려 사항
+
+- 반응형 디자인 (모바일 중심 UX)
+- 카카오톡 공유 API
+- Google / Naver 캘린더 연동 API
+- 로컬 스토리지 기반 임시 저장
+- 데이터 시각화 기반 일정 분석 알고리즘
+
+---
+
+## 📌 향후 개선 방향
+
+- 에브리타임 API 정식 연동
+- 로그인 없이도 일정 입력 저장 기능 제공
+- 관리자용 대시보드 및 통계 페이지
+- 사용자 맞춤 알림 주기 설정 기능
+- 모임 목적별 자동 템플릿 생성
+
+---
+
+> 더 이상 단톡방에서 "언제 시간 돼?" 묻지 마세요.  
+> 링크 하나로 모두가 만족하는 일정을 찾으세요.
